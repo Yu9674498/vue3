@@ -1,0 +1,38 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "target": "ES2023",
+    "lib": ["ES2023", "dom"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "types": ["vite/client", "element-plus/global"], // 适配Vite和UI库类型
+    "allowImportingTsExtensions": true, // 允许导入.ts扩展名（Vite支持）
+    "allowJs": true, // 兼容JS文件（渐进式迁移用）
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "sourceMap": true, // 开发环境生成源映射，便于调试
+    "esModuleInterop": true, // 兼容CommonJS模块导入
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo" // 大型项目加速编译
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.vue",
+    "**/*.d.ts",
+    "src/**/*",
+    "vite.config.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
