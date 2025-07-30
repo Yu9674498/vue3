@@ -1,20 +1,18 @@
 // models/auth.model.js
-const db = require("../config/db");
+const knex = require("../config/db"); // 之前是 'db'，现在是 'knex'
 const bcrypt = require("bcryptjs");
 const idGenerator = require("../utils/idGenerator");
 
 class AuthModel {
   // 用户登录
   async login(username, password) {
-    const [users] = await db.query("SELECT * FROM users WHERE username = ?", [
-      username,
-    ]);
+    // 使用 Knex 查询
+    const user = await knex("users").where({ username: username }).first();
 
-    if (users.length === 0) {
+    if (!user) {
       return null;
     }
 
-    const user = users[0];
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     // 确保user_only_id存在
@@ -27,28 +25,31 @@ class AuthModel {
 
   // 存储刷新令牌
   async storeRefreshToken(user_only_id, refreshToken) {
-    await db.query(
-      "UPDATE users SET refresh_token = ? WHERE user_only_id = ?",
-      [refreshToken, user_only_id]
-    );
+    // 使用 Knex 更新
+    await knex("users")
+      .where({ user_only_id: user_only_id })
+      .update({ refresh_token: refreshToken });
   }
 
   // 验证刷新令牌
   async verifyRefreshToken(user_only_id, refreshToken) {
-    const [users] = await db.query(
-      "SELECT * FROM users WHERE user_only_id = ? AND refresh_token = ?",
-      [user_only_id, refreshToken]
-    );
+    // 使用 Knex 查询
+    const user = await knex("users")
+      .where({
+        user_only_id: user_only_id,
+        refresh_token: refreshToken,
+      })
+      .first(); // .first() 返回单个对象或 undefined，更简洁
 
-    return users.length > 0;
+    return !!user; // 将 user 对象转换为布尔值
   }
 
   // 清除刷新令牌
   async clearRefreshToken(user_only_id) {
-    await db.query(
-      "UPDATE users SET refresh_token = NULL WHERE user_only_id = ?",
-      [user_only_id]
-    );
+    // 使用 Knex 更新
+    await knex("users")
+      .where({ user_only_id: user_only_id })
+      .update({ refresh_token: null });
   }
 }
 

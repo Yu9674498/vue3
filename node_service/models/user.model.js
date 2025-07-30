@@ -1,25 +1,21 @@
 // models/user.model.js
-const db = require("../config/db");
+const knex = require("../config/db"); // 同样，引入 Knex 实例
 const bcrypt = require("bcryptjs");
 
 class UserModel {
   // 获取用户信息
   async getUserById(user_only_id) {
-    const [users] = await db.query(
-      "SELECT id, username, email, role FROM users WHERE user_only_id = ?",
-      [user_only_id]
-    );
-
-    return users[0];
+    // 使用 Knex 查询并指定返回字段
+    return knex("users")
+      .select("id", "username", "email", "role")
+      .where({ user_only_id: user_only_id })
+      .first();
   }
 
   // 获取当前用户路由
   async getUserRoutes(role) {
-    const [users] = await db.query("SELECT routes FROM role WHERE role = ?", [
-      role,
-    ]);
-
-    return users[0];
+    // 使用 Knex 查询
+    return knex("role").select("routes").where({ role: role }).first();
   }
 
   // 创建用户
@@ -27,50 +23,52 @@ class UserModel {
     const { username, password, email, role = "user" } = userData;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const [result] = await db.query(
-      "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)",
-      [username, hashedPassword, email, role]
-    );
+    // Knex 的 insert 方法
+    const [insertId] = await knex("users").insert({
+      username: username,
+      password: hashedPassword,
+      email: email,
+      role: role,
+    });
 
-    return result.insertId;
+    return insertId;
   }
 
   // 更新用户信息
   async updateUser(userId, updateData) {
+    // Knex 处理动态更新非常优雅
     const { email, role } = updateData;
-    const updates = [];
-    const values = [];
+    const updateObject = {};
 
     if (email) {
-      updates.push("email = ?");
-      values.push(email);
+      updateObject.email = email;
     }
 
     if (role) {
-      updates.push("role = ?");
-      values.push(role);
+      updateObject.role = role;
     }
 
-    if (updates.length === 0) {
+    if (Object.keys(updateObject).length === 0) {
       throw new Error("没有提供更新字段");
     }
 
-    values.push(userId);
+    const affectedRows = await knex("users")
+      .where({ id: userId })
+      .update(updateObject);
 
-    const [result] = await db.query(
-      `UPDATE users SET ${updates.join(", ")} WHERE id = ?`,
-      values
-    );
-
-    return result.affectedRows > 0;
+    return affectedRows > 0;
   }
 
   // 获取所有用户
   async getAllUsers() {
-    const [users] = await db.query(
-      "SELECT id, username, email, role, created_at FROM users"
+    // 使用 Knex 查询
+    return knex("users").select(
+      "id",
+      "username",
+      "email",
+      "role",
+      "created_at"
     );
-    return users;
   }
 }
 

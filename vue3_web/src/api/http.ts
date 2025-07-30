@@ -51,6 +51,7 @@ function createInstance() {
           return apiData
         case 401:
           // Token 过期时
+          ElMessage.error(apiData.message)
           logout()
           return Promise.reject(new Error('Token expired'))
         default:

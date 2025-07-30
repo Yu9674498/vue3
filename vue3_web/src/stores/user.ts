@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', () => {
     roles.value = []
     username.value = ''
     removeToken()
-    location.reload()
+    // location.reload()
   }
 
   return {

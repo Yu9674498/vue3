@@ -1,25 +1,14 @@
 // config/db.js
 const { db } = require("."); // 从config/index加载配置
-const mysql = require("mysql2/promise");
+const knex = require("knex")({
+  client: "mysql2", // 建议使用 'mysql2' 驱动
+  connection: {
+    ...db, // 直接复用您在 index.js 中已有的配置
+  },
+  pool: {
+    min: 2,
+    max: 10,
+  },
+});
 
-const pool = mysql.createPool(db);
-
-// // 连接池事件监听
-// pool.on("connection", (connection) => {
-//   console.log("📡 新数据库连接建立:", connection.threadId);
-// });
-
-// pool.on("acquire", (connection) => {
-//   console.debug("🔗 连接被获取:", connection.threadId);
-// });
-
-// pool.on("release", (connection) => {
-//   console.debug("🔄 连接已释放:", connection.threadId);
-// });
-
-// pool.on("error", (err) => {
-//   console.error("‼️ 数据库连接错误:", err.message);
-//   // 这里可以添加警报通知逻辑
-// });
-
-module.exports = pool; // 使用统一配置
+module.exports = knex; // 导出 Knex 实例

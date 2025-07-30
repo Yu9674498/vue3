@@ -7,7 +7,6 @@ class UserController {
     try {
       // 直接从JWT验证后的req.user获取用户信息
       const { user_only_id } = req.user;
-      console.log(user_only_id);
       const user = await UserModel.getUserById(user_only_id);
 
       if (!user) {

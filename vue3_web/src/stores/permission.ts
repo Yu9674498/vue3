@@ -5,7 +5,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import type { BackendRoute, FrontendRoute } from '@/stores/types'
 
 export const usePermissionStore = defineStore('permission', () => {
-  let permission = reactive<object>([])
+  let permission = reactive<object[]>([])
   let dynamicRoutes = reactive<BackendRoute[]>([])
 
   // 动态加载组件 - 添加类型注解
