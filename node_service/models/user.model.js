@@ -6,7 +6,7 @@ class UserModel {
   // 获取用户信息
   async getUserById(user_only_id) {
     // 使用 Knex 查询并指定返回字段
-    return knex("users")
+    return await knex("users")
       .select("id", "username", "email", "role")
       .where({ user_only_id: user_only_id })
       .first();
@@ -15,7 +15,23 @@ class UserModel {
   // 获取当前用户路由
   async getUserRoutes(role) {
     // 使用 Knex 查询
-    return knex("role").select("routes").where({ role: role }).first();
+    return await knex("role").select("routes").where({ role: role }).first();
+  }
+
+  // 获取用户
+  async getUserList(params) {
+    // 使用 Knex 查询
+    const { role, pageNum, pageSize } = params;
+    const totalResult = await knex("users").count("* as total");
+    console.log(totalResult);
+    const users = await knex("users")
+      .select("*")
+      .limit(pageSize)
+      .offset((pageNum - 1) * pageSize);
+    return {
+      data: users,
+      total: totalResult[0].total,
+    };
   }
 
   // 创建用户
@@ -57,18 +73,6 @@ class UserModel {
       .update(updateObject);
 
     return affectedRows > 0;
-  }
-
-  // 获取所有用户
-  async getAllUsers() {
-    // 使用 Knex 查询
-    return knex("users").select(
-      "id",
-      "username",
-      "email",
-      "role",
-      "created_at"
-    );
   }
 }
 

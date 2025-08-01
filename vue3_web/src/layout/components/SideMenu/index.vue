@@ -6,11 +6,10 @@
     <div class="side-menu">
       <el-scrollbar>
         <el-menu
-          :default-active="route.path"
-          class="el-menu-vertical-demo"
+          :default-active="useRoute().path"
+          :default-openeds="defultIndex"
+          class="el-menu-dynamic"
           :collapse="isCollapse"
-          @open="handleOpen"
-          @close="handleClose"
         >
           <Item
             v-for="route in permissionStore.dynamicRoutes"
@@ -28,27 +27,11 @@
 import logo from '@/assets/images/index/Logo.png'
 import Item from './Item.vue'
 import { usePermissionStore } from '@/stores/permission'
-
-const permissionStore = usePermissionStore()
-
 import { useRoute } from 'vue-router'
 
-// 获取当前路由对象
-const route = useRoute()
-
-// 打印当前路由信息
-console.log('当前路径:', route.path) // 例如: "/home"
-console.log('当前路由名称:', route.name) // 例如: "Home"
-console.log('路由参数:', route.params) // 例如: { id: '123' }
-console.log('查询参数:', route.query) // 例如: { page: '1', size: '10' }
-
+const permissionStore = usePermissionStore()
+const defultIndex = reactive(['/system'])
 const isCollapse = ref(false)
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
 </script>
 
 <style lang="scss" scoped>
@@ -62,12 +45,17 @@ const handleClose = (key: string, keyPath: string[]) => {
     display: flex;
     align-items: center;
     justify-content: center;
+    border-bottom: #aaa solid 1px;
     // background: rgb(251, 245, 233);
   }
 
   .side-menu {
     flex: 1;
     overflow: hidden;
+
+    .el-menu-dynamic {
+      border-right: none;
+    }
   }
 }
 </style>

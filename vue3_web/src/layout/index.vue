@@ -26,6 +26,7 @@ import { AppMain, SideMenu, SystemArea } from './components'
     width: 200px;
     height: 100%;
     background: rgba($color: #fffdfd, $alpha: 1);
+    border-right: #aaa solid 1px;
   }
 
   .right-container {
@@ -46,6 +47,7 @@ import { AppMain, SideMenu, SystemArea } from './components'
 
     .main-container {
       flex: 1;
+      padding: 20px;
     }
   }
 }

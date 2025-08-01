@@ -36,7 +36,22 @@ class UserController {
     }
   }
 
-  // 其他方法保持不变...
+  async getCurrentUserList(req, res) {
+    try {
+      // 直接从JWT验证后的req.user获取角色
+      const { role } = req.user;
+      const { pageNum, pageSize } = req.body;
+      const userData = await UserModel.getUserList({ role, pageNum, pageSize });
+
+      if (!userData) {
+        return res.apiError("获取用户列表信息失败", 400);
+      }
+
+      res.apiSuccess(userData, "获取成功");
+    } catch (error) {
+      res.apiError("获取用户列表信息失败: " + error.message, 500);
+    }
+  }
 }
 
 module.exports = new UserController();

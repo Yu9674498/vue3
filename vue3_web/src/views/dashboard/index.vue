@@ -1,13 +1,23 @@
 <script lang="ts" setup>
-import { useUserStore } from '@/stores/user'
-import Admin from './components/Admin.vue'
-import Editor from './components/Editor.vue'
-
-const userStore = useUserStore()
-
-const isAdmin = userStore.roles.includes('admin')
+import SvgDashboard from './images/dashboard.svg?component' // vite-svg-loader 插件的功能
 </script>
 
 <template>
-  <component :is="isAdmin ? Admin : Editor" />
+  <div class="app-container center">
+    <SvgDashboard class="svg" />
+    <p>欢迎来到首页</p>
+  </div>
 </template>
+
+<style lang="scss" scoped>
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .svg {
+    width: 600px;
+    max-width: 100%;
+  }
+}
+</style>

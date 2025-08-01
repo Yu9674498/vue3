@@ -10,5 +10,6 @@ router.use(AuthMiddleware.authenticate);
 
 router.get("/getUserInfo", UserController.getCurrentUser);
 router.get("/getUserRoutes", UserController.getCurrentUserRoutes);
+router.post("/getUserList", UserController.getCurrentUserList);
 
 module.exports = router;

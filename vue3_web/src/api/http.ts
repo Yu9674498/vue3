@@ -47,7 +47,10 @@ function createInstance() {
       switch (code) {
         case 200:
           // 本系统采用 code === 200 来表示没有业务错误
-          ElMessage.success(apiData.message || '操作成功')
+          ElMessage.success({
+            message: apiData.message || '操作成功',
+            duration: 500
+          })
           return apiData
         case 401:
           // Token 过期时

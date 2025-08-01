@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { getUserInfo } from '@/api/common'
 import { getToken, removeToken } from '@/utils/cookies'
+import router from '@/router'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(getToken() || '')
@@ -21,6 +22,7 @@ export const useUserStore = defineStore('user', () => {
     roles.value = []
     username.value = ''
     removeToken()
+    router.push({ path: '/login' })
     // location.reload()
   }
 
